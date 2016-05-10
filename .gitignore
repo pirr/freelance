@@ -1,0 +1,4 @@
+*.pyc
+companytests/edison/game_lobby/user/migrations/
+companytests/edison/game_lobby/db.sqlite3
+*.pyo
