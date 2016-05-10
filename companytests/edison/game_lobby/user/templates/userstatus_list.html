@@ -1,0 +1,12 @@
+{% if online %}
+	<table>
+		{% for item in online %}
+			{% if item.player.id != request.user.id %}
+			<tr>
+				<td>{{ item.player  }}</td>
+			</tr>
+			{% endif %}
+		{% endfor %}
+	</table>
+{% endif %}
+
