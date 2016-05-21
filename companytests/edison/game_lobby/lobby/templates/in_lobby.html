@@ -1,0 +1,17 @@
+{% load staticfiles %}
+<script src="{% static "js/in_lobby.js" %}" type="text/javascript"></script>
+<h2>IN LOBBY</h2>
+<br/>
+<button onclick="leave_lobby()">Покинуть лобби</button>
+{% for item in lobby %}
+	<ul>
+	{% for player in item.players.all %}
+		<li>{{ player }}</li>
+	{% endfor %}
+	</ul>
+{% endfor %}
+
+<script type="text/javascript">
+	var player = {{ request.user.id }};
+	var url_in_lobby = "{% url "lobby:in_lobby" %}";
+</script>

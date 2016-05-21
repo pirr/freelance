@@ -1,0 +1,18 @@
+{% extends "base/lobby_main.html" %}
+{% load i18n %}
+
+{% block body %}
+	<form class="form-lobby-creation" method="post" action="{% url "lobby:lobby_creation" %}">
+		<h2 class="form-lobby-heading">{% trans "Создание лобби" %}</h2>
+	    
+	    {% csrf_token %}
+
+	    {{ form.as_p }}
+
+	    <button class="btn btn-lg btn-primary btn-block" type="submit">{% trans "Создать" %}</button>
+	</form>
+
+	<form class="form-lobby-creation" method="get" action="{% url "lobby:hole" %}">
+		<button class="btn btn-lg btn-primary btn-block" type="submit">{% trans "Отмена" %}</button>
+	</form>
+{% endblock %}

@@ -1,0 +1,76 @@
+{% load i18n %}
+
+{% if not player_lobby %}
+    <form method="post" action="{% url "lobby:lobby_creation" %}">
+        {% csrf_token %}
+        <button type="submit">{% trans "Создать лобби" %}</button>
+    </form>
+{% else %}
+    {% for lobby in player_lobby %}
+        {% if lobby.creator.id == request.user.id %}
+            Вы создали: {{lobby.name}} - {{lobby.number}}
+            <form method="post" action="{% url "lobby:delete" pk=lobby.id %}">
+                {% csrf_token %}
+                <button type="submit">{% trans "Закрыть лобби" %}</button>
+            </form>
+        {% else %}
+            Вы в лобби: {{lobby.name}} - {{lobby.number}}
+            <form method="post" action="{% url "lobby:leave_lobby" pk=lobby.id %}" onsubmit="return timeout();">
+                {% csrf_token %}
+                <button type="submit">{% trans "Выйти из лобби" %}</button>
+            </form>
+        {% endif %}
+    {% endfor %}
+{% endif %}
+
+{% if in_lobby %}
+    <form method="post" action="{% url "lobby:in_lobby" %}">
+        {% csrf_token %}
+        <button type="submit">{% trans "В бой" %}</button>
+    </form>
+{% endif %}
+
+<div id="online"></div>
+
+{% if lobby_list %}
+    {% regroup lobby_list by number as number_list %}
+    <table>
+        <tr>
+            {% for number in number_list %}
+                <td>
+                    <table>
+                        <tr>
+                            <td>
+                                {% trans "на" %} {{ number.grouper }} {% trans "игроков" %}"
+                            </td>
+                        </tr>
+                        {% for item in number.list %}
+                        <tr>
+                            <td>
+                                {{ item.name }}
+                            </td>
+                            <td>
+                                {{ item.creator }}
+                            </td>
+                            <td>
+                                {{ item.players.count }}
+                            </td>
+                            <td>
+                                {% if item.creator.id != request.user.id and item.players.count != number.grouper|add:"0" and not in_lobby and not timeout %}
+                                    <form data-lobby-name="{{ item.name }}" method="post" action="{% url "lobby:take_lobby" pk=item.id %}" onsubmit="return confirm_submit(this);">
+                                        {% csrf_token %}
+                                        <button type="submit" >{% trans "присоединиться" %}</button>
+                                    </form>
+                                {% endif %}
+                            </td>
+                            <td>
+                                {{ item.get_status_display }}
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </table>
+                </td>
+            {% endfor %}
+        </tr>
+    </table>
+{% endif %}
